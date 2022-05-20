@@ -21,7 +21,8 @@ for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1)
 
 call :colorEcho 0C "[Info] Tool made by 'Phoenixthrush UwU'" && echo. && echo.
 
-REM rmdir /s /q tools && mkdir tools
+if not exist .\dist (mkdir dist)
+if not exist .\tools (mkdir tools)
 del .\dist\*.* /q
 
 if not exist .\tools\7z2107-extra (
