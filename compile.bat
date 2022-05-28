@@ -53,7 +53,7 @@ call :colorEcho 0B "[Info] compiling executable "
 call :colorEcho 0F " (666.exe)" && echo.
 cd ./source
 ..\tools\mingw64\bin\windres.exe 666.rc 666.o
-..\tools\mingw64\bin\gcc -mwindows -O3 -Os -s -o 666.exe 666.c 666.o
+..\tools\mingw64\bin\gcc -O3 -Os -s -o 666.exe 666.c 666.o
 ..\tools\upx-3.96-win64\upx.exe 666.exe >nul
 del 666.o
 move 666.exe ..\dist >nul
