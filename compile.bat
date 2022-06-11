@@ -35,7 +35,7 @@ if not exist .\tools\7z2107-extra (
 
 if not exist .\tools\mingw64 (
 	call :colorEcho 0A "[Info] downloading the mingw64 package" && echo.
-	powershell -Command "Invoke-WebRequest https://github.com/phoenixthrush/winlibs_mingw/releases/download/12.0.1-snapshot20220123-9.0.0-msvcrt-r1/winlibs-x86_64-posix-seh-gcc-12.0.1-snapshot20220123-mingw-w64-9.0.0-r1.7z -OutFile .\tools\mingw64.7z"	
+	powershell -Command "Invoke-WebRequest https://github.com/phoenixthrush/winlibs_mingw/releases/download/12.1.0-14.0.4-10.0.0-ucrt-r2/winlibs-x86_64-posix-seh-gcc-12.1.0-mingw-w64ucrt-10.0.0-r2.7z -OutFile .\tools\mingw64.7z"	
 	call :colorEcho 0A "[Info] extracting the mingw64 package" && echo. && echo.
 	cd .\tools && .\7z2107-extra\7za.exe x mingw64.7z >nul && cd ..
 	del .\tools\mingw64.7z /q
