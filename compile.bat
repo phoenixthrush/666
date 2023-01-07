@@ -1,6 +1,6 @@
-del /q main.exe
+del /q 666.exe
 
 windres source\manifest.rc source\manifest.o
-gcc -o main source\main.c source\manifest.o -Wl,--subsystem=windows -Wall
+gcc -o 666 source\main.c source\manifest.o -Wl,--subsystem=windows -Wall
 
 del /q source\manifest.o
