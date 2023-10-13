@@ -9,5 +9,8 @@ all: $(TARGET)
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $@ $^
 
+run:
+	$(TARGET)
+
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
